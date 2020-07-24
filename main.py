@@ -1,4 +1,3 @@
-
 nytimes_com = '''
 This New Liquid Is Magnetic, and Mesmerizing
 
@@ -37,26 +36,41 @@ Twitter and Square Chief Executive Officer Jack Dorsey
 # write your code here
 import argparse as arg
 import os
+
 parser = arg.ArgumentParser()
 parser.add_argument('dir', help='directory name')
 args = parser.parse_args()
-if not os.path.exists(args['dir']):
-    os.mkdir(args['dir'])
+if not os.path.exists(args.dir):
+    os.mkdir(args.dir)
+
+
+def save_file(filename, content):
+    filename = filename.rsplit('.', maxsplit=1)[0]
+    with open(os.path.join(args.dir, filename + '.txt'), 'w') as f:
+        f.write(content)
 
 
 ln = True
 while ln:
     url = input('> ')
+    if url == 'exit':
+        ln = False
+        continue
+    file_name = url.rsplit('.', maxsplit=1)[0]+'.txt'
     for i in url:
         lc = list(filter(lambda x: x == '.', url))
-        if any(lc):
-            if url == "bloomberg.com":
-                print(bloomberg_com)
-                url = url.rsplit('.', maxsplit=1)[0]
-                with open(os.path.join('dir',url+'.txt')) as f:
-                    f.write(bloomberg_com)
-            elif url == 'nytimes.com':
-                print(nytimes_com)
-    ln = input('> ')
-    if ln == 'exit':
-        ln = False
+    if any(lc):
+        if url == "bloomberg.com":
+            print(bloomberg_com)
+            save_file(url, bloomberg_com)
+        elif url == 'nytimes.com':
+            print(nytimes_com)
+            save_file(url, nytimes_com)
+        else:
+            print('Error: Incorrect URL')
+
+    elif os.path.exists(os.path.join(args.dir, file_name)):
+        with open(os.path.join(args.dir, file_name), 'r') as f:
+            print(f.read())
+    else:
+        print('Error: Incorrect URL')
